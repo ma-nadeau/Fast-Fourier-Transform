@@ -19,8 +19,7 @@ class FastMode:
         pass
 
     def run_FFT(self):
-        
-        # This is temporary, will be replaced with the FFT
+        #TODO: This is temporary, will be replaced with the FFT
         DiscreteFourierTransform2D = dft2d.DiscreteFourierTransform2D(
             self.original_image
         )

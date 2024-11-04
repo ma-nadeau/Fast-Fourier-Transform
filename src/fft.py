@@ -4,8 +4,10 @@ import numpy as np
 import sys
 from fftQuery import fftQuery, fftQueryParsingError
 from FastMode import FastMode
+from DenoiseMode import DenoiseMode
 import DiscreteFourierTransform2D as dft2d
 from QueryMode import Mode
+
 
 
 def main():
@@ -23,7 +25,7 @@ def main():
         FastMode(np.array(image, dtype=np.float64))
 
     elif case == Mode.DENOISE:
-
+        DenoiseMode(np.array(image, dtype=np.float64))
         pass
     elif case == Mode.COMPRESS:
 
