@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class DiscreteFourierTransform:
+class DiscreteFourierTransform2D:
     def __init__(self, signal):
         self.signal = np.array(signal)
         self.transformed_signal = None

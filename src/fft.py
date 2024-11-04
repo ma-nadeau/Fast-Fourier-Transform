@@ -3,19 +3,38 @@
 import numpy as np
 import sys
 from fftQuery import fftQuery, fftQueryParsingError
+from FastMode import FastMode
+import DiscreteFourierTransform2D as dft2d
+from QueryMode import Mode
 
 
 def main():
     try:
         query = fftQuery.parseArguments(sys.argv[1:])
-        mode = query.get_mode()
         image = query.get_image()
 
     except fftQueryParsingError as error:
-        print("ERROR\tIncorrect input syntax: " + error.value)
+        print("ERROR\tIncorrect input syntax: " + str(error))
         exit()
 
-    pass
+    case = query.get_mode()
+
+    if case == Mode.FAST:
+        FastMode(np.array(image, dtype=np.float64))
+
+    elif case == Mode.DENOISE:
+
+        pass
+    elif case == Mode.COMPRESS:
+
+        pass
+    elif case == Mode.PLOT_RUNTIME:
+
+        pass
+    else:
+        print("ERROR\tUnknown mode: " + case)
+        exit()
+
 
 
 # For when the program is invoked from the command line (stdin)

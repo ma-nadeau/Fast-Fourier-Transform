@@ -14,10 +14,10 @@ This Python program implements the Fast Fourier Transform.
 It was developed and tested using Python 3.12.
 ## How to Run
 
-To invoke the application, use the following command in your terminal:
-
+To invoke the application, navigate to the `src` directory and use the following command in your terminal:
 
 ```bash
+cd src
 python fft.py [-m mode] [-i image]
 ```
 
@@ -31,5 +31,7 @@ python fft.py [-m mode] [-i image]
 
 ### Image (optional):
 - The filename of the image for the DFT (default: `moonlanding.png`).
+
+**Note:** The files should be placed in the `Figures` folder.
 
 
