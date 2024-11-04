@@ -51,4 +51,5 @@ class FastMode:
             os.makedirs(self.folder_path)
 
         plt.savefig(os.path.join(self.folder_path, "FastMode_FFT.png"))
+        
         plt.show()
