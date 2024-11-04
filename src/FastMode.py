@@ -1,7 +1,7 @@
 from matplotlib.colors import LogNorm
 import numpy as np
 import matplotlib.pyplot as plt
-import DiscreteFourierTransform2D as dft2d # This is temporary, will be replaced with the FFT
+import DiscreteFourierTransform2D as dft2d  # This is temporary, will be replaced with the FFT
 import os
 
 
@@ -13,13 +13,16 @@ class FastMode:
     ):
         self.original_image = original_image
         self.folder_path = folder_path
-        self.fft_image = self.run_FFT()
+        # TODO: change it for our own implementation
+        self.fft_image = np.fft.fft2(self.original_image)
+
+        # self.run_FFT() # change this for our implementation
 
         self.plot_images()
         pass
 
     def run_FFT(self):
-        #TODO: This is temporary, will be replaced with the FFT
+        # TODO: This is temporary, will be replaced with the FFT
         DiscreteFourierTransform2D = dft2d.DiscreteFourierTransform2D(
             self.original_image
         )
@@ -37,14 +40,15 @@ class FastMode:
 
         # Plot Fourier Transform
         plt.subplot(1, 2, 2)
-        plt.imshow(self.fft_image, cmap="gray", norm=LogNorm())
+        # TODO: check if we need to use np.abs()/np.imag instead of .real
+        plt.imshow(self.fft_image.real, cmap="gray", norm=LogNorm()) 
         plt.title("Fourier Transform (Log Scale)")
         plt.axis("off")
 
         plt.tight_layout()
-        plt.show()
 
         if not os.path.exists(self.folder_path):
             os.makedirs(self.folder_path)
 
         plt.savefig(os.path.join(self.folder_path, "FastMode_FFT.png"))
+        plt.show()

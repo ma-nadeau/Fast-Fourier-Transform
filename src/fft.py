@@ -5,9 +5,8 @@ import sys
 from fftQuery import fftQuery, fftQueryParsingError
 from FastMode import FastMode
 from DenoiseMode import DenoiseMode
-import DiscreteFourierTransform2D as dft2d
+from CompressMode import CompressMode
 from QueryMode import Mode
-
 
 
 def main():
@@ -23,20 +22,16 @@ def main():
 
     if case == Mode.FAST:
         FastMode(np.array(image, dtype=np.float64))
-
     elif case == Mode.DENOISE:
         DenoiseMode(np.array(image, dtype=np.float64))
-        pass
     elif case == Mode.COMPRESS:
-
-        pass
+        CompressMode(np.array(image, dtype=np.float64))
     elif case == Mode.PLOT_RUNTIME:
 
         pass
     else:
         print("ERROR\tUnknown mode: " + case)
         exit()
-
 
 
 # For when the program is invoked from the command line (stdin)
