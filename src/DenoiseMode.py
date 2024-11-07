@@ -23,6 +23,7 @@ class DenoiseMode:
         # Apply a simple denoising technique (e.g., thresholding)
         # TODO: What is considered a high frequency?
         threshold = np.mean(transformed_signal) + 2 * np.std(transformed_signal)
+        
         denoised_signal = np.where(
             transformed_signal > threshold, transformed_signal, 0
         )

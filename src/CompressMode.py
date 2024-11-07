@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import DiscreteFourierTransform2D as dft2d  # This is temporary, will be replaced with the FFT
 import os
 from typing import Tuple
 
@@ -15,7 +14,7 @@ class CompressMode:
         self.folder_path = folder_path
         self.fft_image = self.run_FFT()
 
-        self.plot_images()
+        self.run_compression()
         pass
 
     def run_FFT(self) -> np.ndarray:
@@ -64,13 +63,13 @@ class CompressMode:
 
     def plot_images(self) -> None:
         """Plot the original image and its compressed images at different levels."""
-        fft_image = self.run_FFT()
         compression_levels = [0, 1, 10, 30, 50, 99.9]
         plt.figure(figsize=(15, 10))
+        plt.suptitle("Compressed Image", fontsize=20)
 
         for i, level in enumerate(compression_levels):
             compressed_image, number_non_zeros = self.compress_and_inverse_fft(
-                fft_image, level
+                self.fft_image, level
             )
             print(f"Compression Level: {level}%, Non-Zero Coefficients: {number_non_zeros}")
 
@@ -86,4 +85,7 @@ class CompressMode:
 
         plt.savefig(os.path.join(self.folder_path, "Compressed_Images.png"))
 
-        plt.show()
+    
+    def run_compression(self) -> None:
+        self.run_FFT()
+        self.plot_images()

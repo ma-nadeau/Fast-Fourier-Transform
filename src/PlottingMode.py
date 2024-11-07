@@ -64,6 +64,8 @@ class PlottingMode:
         self,
         sizes: np.array,
     ) -> None:
+        
+        plt.suptitle("Runtime of FFT", fontsize=20)
         # Define error bar colors and transparency
         errorbar_alpha = 0.3
         fft_color = "blue"

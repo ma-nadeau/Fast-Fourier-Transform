@@ -1,7 +1,6 @@
 from matplotlib.colors import LogNorm
 import numpy as np
 import matplotlib.pyplot as plt
-import DiscreteFourierTransform2D as dft2d  # TODO: This is temporary, will be replaced with the FFT
 import os
 
 
@@ -19,7 +18,7 @@ class FastMode:
         self.plot_images()
 
     def run_FFT(self) -> np.ndarray:
-        # TODO: This is temporary, will be replaced with our implementation of the FFT
+        # FIXME: This is temporary, will be replaced with our implementation of the FFT
         return np.fft.fft2(self.original_image)
 
     def plot_images(self) -> None:
