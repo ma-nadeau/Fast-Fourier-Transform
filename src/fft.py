@@ -6,7 +6,9 @@ from fftQuery import fftQuery, fftQueryParsingError
 from FastMode import FastMode
 from DenoiseMode import DenoiseMode
 from CompressMode import CompressMode
+from PlottingMode import PlottingMode
 from QueryMode import Mode
+
 
 
 def main():
@@ -27,8 +29,7 @@ def main():
     elif case == Mode.COMPRESS:
         CompressMode(np.array(image, dtype=np.float64))
     elif case == Mode.PLOT_RUNTIME:
-
-        pass
+        PlottingMode()
     else:
         print("ERROR\tUnknown mode: " + case)
         exit()

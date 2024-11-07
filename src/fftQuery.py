@@ -2,7 +2,6 @@ from typing import List
 import os
 import cv2
 import numpy as np
-from enum import Enum
 from QueryMode import Mode
 
 
