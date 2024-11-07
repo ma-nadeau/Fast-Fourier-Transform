@@ -18,15 +18,10 @@ class CompressMode:
         self.plot_images()
         pass
 
-    def run_FFT(self):
-
-        # TODO: This is temporary, will be replaced with the FFT
-        # DiscreteFourierTransform2D = dft2d.DiscreteFourierTransform2D(
-        #    self.original_image
-        # )
-        # return DiscreteFourierTransform2D.compute_dft_2d().get_transformed_signal()
-        # TODO: This is temporary, will be replaced with the FFT
+    def run_FFT(self) -> np.ndarray:
+        # FIXME: This is temporary, will be replaced with our implement of the FFT
         return np.fft.fft2(self.original_image)
+    
 
     def compression_fft_largest_percentile(
         self, fft_image: np.array, compression_level: float
@@ -54,30 +49,30 @@ class CompressMode:
         use_largest_percentile: bool = True,
     ) -> Tuple[np.array, int]:
         if use_largest_percentile:
-            compressed_fft, non_zeros = self.compression_fft_largest_percentile(
+            compressed_fft, number_non_zeros = self.compression_fft_largest_percentile(
                 fft_image, compression_level
             )
             inverse_fft_image = np.fft.ifft2(compressed_fft)
         else:
             # TODO: implement this method
-            compressed_fft, non_zeros = (
+            compressed_fft, number_non_zeros = (
                 self.compression_fft_smallest_percentile_and_portion_largest(
                     fft_image, compression_level
                 )
             )
-        return inverse_fft_image, non_zeros
+        return inverse_fft_image, number_non_zeros
 
-    def plot_images(self):
+    def plot_images(self) -> None:
         """Plot the original image and its compressed images at different levels."""
         fft_image = self.run_FFT()
         compression_levels = [0, 1, 10, 30, 50, 99.9]
         plt.figure(figsize=(15, 10))
 
         for i, level in enumerate(compression_levels):
-            compressed_image, non_zeros = self.compress_and_inverse_fft(
+            compressed_image, number_non_zeros = self.compress_and_inverse_fft(
                 fft_image, level
             )
-            print(f"Compression Level: {level}%, Non-Zero Coefficients: {non_zeros}")
+            print(f"Compression Level: {level}%, Non-Zero Coefficients: {number_non_zeros}")
 
             plt.subplot(2, 3, i + 1)
             plt.imshow(compressed_image.real, cmap="gray")

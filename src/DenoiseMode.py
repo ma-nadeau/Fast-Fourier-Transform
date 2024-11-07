@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import DiscreteFourierTransform2D as dft2d  # This is temporary, will be replaced with the FFT
 import os
 
 
@@ -12,34 +11,34 @@ class DenoiseMode:
     ):
         self.original_image = original_image
         self.folder_path = folder_path
-        self.denoise_image = self.run_denoise()
+        self.denoised_image = self.denoise()
 
-        self.plot_images()
-        pass
+        self.run_denoise()
 
-    def run_denoise(self):
-        # TODO: This is temporary, will be replaced with our FFT
+    def denoise(self) -> np.ndarray:
 
+        # FIXME: This is temporary, will be replaced with our FFT
         transformed_signal = np.fft.fft2(self.original_image)
 
         # Apply a simple denoising technique (e.g., thresholding)
-        threshold = np.mean(transformed_signal) + 2 * np.std(
-            transformed_signal
-        )  # TODO: check what high frequencies are
+        # TODO: What is considered a high frequency?
+        threshold = np.mean(transformed_signal) + 2 * np.std(transformed_signal)
         denoised_signal = np.where(
             transformed_signal > threshold, transformed_signal, 0
         )
 
-        # TODO: This is temporary, will be replaced with our FFT
+        # FIXME: This is temporary, will be replaced with our FFT
         # Inverse DFT to get the denoised image
         denoised_image = np.fft.ifft2(denoised_signal).real
 
         return denoised_image
 
-    def plot_images(self):
+    def plot_images(self) -> None:
         """Plot the original image and its Denoise image."""
-        denoised_image = self.run_denoise()
         plt.figure(figsize=(10, 5))
+
+        # Plot original image
+        plt.suptitle("Denoised Image", fontsize=20)
 
         # Plot original image
         plt.subplot(1, 2, 1)
@@ -49,7 +48,7 @@ class DenoiseMode:
 
         # Plot denoised image
         plt.subplot(1, 2, 2)
-        plt.imshow(denoised_image, cmap="gray")
+        plt.imshow(self.denoised_image, cmap="gray")
         plt.title("Denoised Image")
         plt.axis("off")
 
@@ -60,4 +59,6 @@ class DenoiseMode:
 
         plt.savefig(os.path.join(self.folder_path, "Denoised_Image.png"))
 
-        plt.show()
+    def run_denoise(self) -> None:
+        self.denoise()
+        self.plot_images()

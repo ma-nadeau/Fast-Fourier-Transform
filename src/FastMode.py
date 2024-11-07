@@ -1,7 +1,7 @@
 from matplotlib.colors import LogNorm
 import numpy as np
 import matplotlib.pyplot as plt
-import DiscreteFourierTransform2D as dft2d  # This is temporary, will be replaced with the FFT
+import DiscreteFourierTransform2D as dft2d  # TODO: This is temporary, will be replaced with the FFT
 import os
 
 
@@ -13,36 +13,37 @@ class FastMode:
     ):
         self.original_image = original_image
         self.folder_path = folder_path
-        # TODO: change it for our own implementation
-        self.fft_image = np.fft.fft2(self.original_image)
 
-        # self.run_FFT() # change this for our implementation
-
+        self.numpy_fft_image = np.fft.fft2(self.original_image)
+        self.our_fft_image = self.run_FFT()
         self.plot_images()
-        pass
 
-    def run_FFT(self):
-        # TODO: This is temporary, will be replaced with the FFT
-        DiscreteFourierTransform2D = dft2d.DiscreteFourierTransform2D(
-            self.original_image
-        )
-        return DiscreteFourierTransform2D.compute_dft_2d().get_transformed_signal()
+    def run_FFT(self) -> np.ndarray:
+        # TODO: This is temporary, will be replaced with our implementation of the FFT
+        return np.fft.fft2(self.original_image)
 
-    def plot_images(self):
+    def plot_images(self) -> None:
         """Plot the original image and its Fourier transform."""
-        plt.figure(figsize=(10, 5))
+        plt.figure(figsize=(15, 6))
 
         # Plot original image
-        plt.subplot(1, 2, 1)
+        plt.subplot(1, 3, 1)
         plt.imshow(self.original_image, cmap="gray")
-        plt.title("Original Image")
+        plt.suptitle("Fast Fourier Transform Analysis", fontsize=20)
+
+        plt.title("Original Image", fontsize=16)
         plt.axis("off")
 
-        # Plot Fourier Transform
-        plt.subplot(1, 2, 2)
-        # TODO: check if we need to use np.abs()/np.imag instead of .real
-        plt.imshow(self.fft_image.real, cmap="gray", norm=LogNorm()) 
-        plt.title("Fourier Transform (Log Scale)")
+        # Plot Numpy FFT
+        plt.subplot(1, 3, 2)
+        plt.imshow(np.log(np.abs(self.numpy_fft_image)), cmap="gray", norm=LogNorm())
+        plt.title("Numpy FFT (Log Scale)", fontsize=16)
+        plt.axis("off")
+
+        # Plot Custom FFT
+        plt.subplot(1, 3, 3)
+        plt.imshow(np.log(np.abs(self.our_fft_image)), cmap="gray", norm=LogNorm())
+        plt.title("Custom FFT (Log Scale)", fontsize=16)
         plt.axis("off")
 
         plt.tight_layout()
@@ -51,5 +52,3 @@ class FastMode:
             os.makedirs(self.folder_path)
 
         plt.savefig(os.path.join(self.folder_path, "FastMode_FFT.png"))
-        
-        plt.show()

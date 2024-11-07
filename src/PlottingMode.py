@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-from typing import Callable
+from typing import Callable, List
 import time
 from DiscreteFourierTransform2D import DiscreteFourierTransform2D
 
@@ -16,12 +16,12 @@ class PlottingMode:
         self.time_naive: np.ndarray = np.array([])
         self.fft_std: np.ndarray = np.array([])
         self.naive_std: np.ndarray = np.array([])
-        
+
         self.run_experiment()
 
     def store_and_compute_runtime(
         self, func: Callable, *args, storing_location: str, iterations: int = 10
-    ):
+    ) -> None:
         total_time = []
         for _ in range(iterations):
             time_start = time.time()
@@ -46,21 +46,24 @@ class PlottingMode:
                 f"Naive Fourier Transform - Average runtime: {average_time} seconds, Standard deviation: {std_time} seconds"
             )
 
-    def clear_time_array(self):
-        self.time = np.array([])
+    def clear_time_array(self) -> None:
+        self.time_fft = np.array([])
+        self.time_naive = np.array([])
+        self.fft_std = np.array([])
+        self.naive_std = np.array([])
 
-    def fft_method(self, arr):
-        # TODO: Implement the FFT method
+    def fft_method(self, arr: np.array) -> np.array:
+        # FIXME: Implement and use our implementation of the FFT method
         return np.fft.fft2(arr)
 
-    def naive_ft_method(self, arr):
-        t = DiscreteFourierTransform2D(arr)
-        return t.compute_dft_2d()
+    def naive_ft_method(self, arr: np.array) -> np.array:
+        naiveFT = DiscreteFourierTransform2D(arr)
+        return naiveFT.compute_dft_2d()
 
     def plot_average_runtime(
         self,
         sizes: np.array,
-    ):
+    ) -> None:
         # Define error bar colors and transparency
         errorbar_alpha = 0.3
         fft_color = "blue"
@@ -99,9 +102,8 @@ class PlottingMode:
 
         plt.savefig(os.path.join(self.folder_path, "Runtime_Analysis.png"))
 
-    # Run experiments
-    def run_experiment(self, power=range(5, 11)):
-        # TODO: Here, I assume that there's a type in the document, and it isn't 25 to 210 but 2^5 to 2^10
+    def run_experiment(self, power: List[int] = list(range(5, 11))) -> None:
+        # TODO: Verify if there's a typo in the document. I assume it should be 2^5 to 2^10 instead of 25 to 210.
         sizes = np.array([2**i for i in power])
         for size in sizes:
             array = create_2D_array_of_random_element(size)
