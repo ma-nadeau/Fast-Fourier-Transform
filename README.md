@@ -27,7 +27,7 @@ python fft.py [-m mode] [-i image]
 - **1. Fast mode (default):** Convert image to FFT form and display.
 - **2. Denoise:** The image is denoised by applying an FFT, truncating high frequencies, and then displayed.
 - **3. Compress:** Compress image and plot.
-- **4. Plot runtime graphs for the report.**
+- **4. Plot runtime graphs.**
 
 ### Image (optional):
 - The filename of the image for the DFT (default: `moonlanding.png`).
