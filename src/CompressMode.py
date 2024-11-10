@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 from typing import Tuple
-
+from FastFourierTransform import FastFourierTransform
 
 class CompressMode:
     def __init__(
@@ -18,8 +18,8 @@ class CompressMode:
         pass
 
     def run_FFT(self) -> np.ndarray:
-        # FIXME: This is temporary, will be replaced with our implement of the FFT
-        return np.fft.fft2(self.original_image)
+        fft = FastFourierTransform()
+        return fft.fft_2D(self.original_image)
     
 
     def compression_fft_largest_percentile(
@@ -47,11 +47,12 @@ class CompressMode:
         compression_level: float,
         use_largest_percentile: bool = True,
     ) -> Tuple[np.array, int]:
+        fft = FastFourierTransform()
         if use_largest_percentile:
             compressed_fft, number_non_zeros = self.compression_fft_largest_percentile(
                 fft_image, compression_level
             )
-            inverse_fft_image = np.fft.ifft2(compressed_fft)
+            inverse_fft_image = fft.ifft_2D(compressed_fft)
         else:
             # TODO: implement this method
             compressed_fft, number_non_zeros = (

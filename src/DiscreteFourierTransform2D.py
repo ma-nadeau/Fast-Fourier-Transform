@@ -2,11 +2,10 @@ import numpy as np
 
 
 class DiscreteFourierTransform2D:
-    def __init__(self, signal):
-        self.signal = np.array(signal)
-        self.transformed_signal = None
+    def __init__(self):
+        pass
 
-    def compute_dft_2d(self):
+    def dft_2D(self, signal):
         """
         Computes the 2D Discrete Fourier Transform (DFT) of the input signal.
 
@@ -15,31 +14,28 @@ class DiscreteFourierTransform2D:
         Returns:
             np.ndarray: The transformed 2D signal in the frequency domain.
         """
-        M, N = self.signal.shape
-        self.transformed_signal = np.zeros((M, N), dtype=complex)
-        # for u = 0, 1, 2, ..., M-1
-        for m in range(M):
-            # for v = 0, 1, 2, ..., N-1
-            for n in range(N):
-                sum = 0
-                # for k = 0, 1, 2, ..., M-1
-                for k in range(M):
-                    # for l = 0, 1, 2, ..., N-1
-                    for l in range(N):
-                        # F[k,l] = sum (sum f[m,n] * exp(-2i * pi * k * m / M) * exp(-2i * pi * l * n / N)
-                        sum += (
-                            self.signal[m, n]  # f[m,n]
-                            * np.exp(
-                                -2j * np.pi * k * m / M
-                            )  # exp(-2i * pi * k * m / M)
-                            * np.exp(
-                                -2j * np.pi * l * n / N
-                            )  # exp(-2i * pi * l * n / N)
-                        )
-                self.transformed_signal[k, l] += sum
-        return self.transformed_signal
+        M, N = signal.shape
+        # Initialize the transformed signal
+        transformed_signal = np.zeros((M, N), dtype=complex)
+        
+        # Create vectors for k, l, m, and n 
+        k = np.arange(M).reshape((M, 1)) # k = [[0], [1], [2], ..., [M-1]]
+        l = np.arange(N).reshape((N, 1)) # l = [[0], [1], [2], ..., [N-1]]
+        m = np.arange(M).reshape((1, M)) # m = [0, 1, 2, ..., M-1]
+        n = np.arange(N).reshape((1, N)) # n = [0, 1, 2, ..., N-1]
 
-    def compute_inverse_dft_2d(self):
+        # Compute the exponent matrices
+        exp_km = np.exp(-2j * np.pi * k * m / M)
+        exp_ln = np.exp(-2j * np.pi * l * n / N)
+
+        # Perform the matrix multiplications 
+        # transformed_signal = sum (sum (exp(-2j * pi * k * m / M) * signal * exp(-2j * pi * l * n / N)))
+        intermediate = np.dot(exp_km, signal) # intermediate = exp(-2j * pi * k * m / M) * signal
+        transformed_signal = np.dot(intermediate, exp_ln)  # transformed_signal = intermediate * exp(-2j * pi * l * n / N)
+
+        return transformed_signal
+
+    def idft_2D(self, transformed_signal):
         """
         Computes the 2D Inverse Discrete Fourier Transform (IDFT) of the transformed signal.
 
@@ -48,31 +44,23 @@ class DiscreteFourierTransform2D:
         Returns:
             np.ndarray: The reconstructed 2D signal in the time domain.
         """
-        M, N = self.transformed_signal.shape
-        self.signal = np.zeros((M, N), dtype=complex)
+        M, N = transformed_signal.shape
+        signal = np.zeros((M, N), dtype=complex)
+        
+        # Create vectors for k, l, m, and n
+        k = np.arange(M).reshape((M, 1)) # k = [[0], [1], [2], ..., [M-1]]
+        l = np.arange(N).reshape((N, 1)) # l = [[0], [1], [2], ..., [N-1]]
+        m = np.arange(M).reshape((1, M)) # m = [0, 1, 2, ..., M-1]
+        n = np.arange(N).reshape((1, N)) # n = [0, 1, 2, ..., N-1]
 
-        # for m = 0, 1, 2, ..., M-1
-        for m in range(M):
-            # for n = 0, 1, 2, ..., N-1
-            for n in range(N):
-                sum_value = 0
-                # for k = 0, 1, 2, ..., M-1
-                for k in range(M):
-                    # for l = 0, 1, 2, ..., N-1
-                    for l in range(N):
-                        # f[m,n] = sum (sum F[k,l] * exp(2i * pi * k * m / M) * exp(2i * pi * l * n / N)
-                        sum_value += (
-                            self.transformed_signal[k, l]  # F[k,l]
-                            * np.exp(12 * np.pi * k * m / M)  # exp(2i * pi * k * m / M)
-                            * np.exp(12 * np.pi * l * n / N)  # exp(2i * pi * l * n / N)
-                        )
-                self.signal[m, n] = sum_value
-        # f[m,n] = f[m,n] / M * N
-        self.signal /= M * N
-        return self.signal
+        # Compute the exponent matrices
+        exp_km = np.exp(12j * np.pi * k * m / M)
+        exp_ln = np.exp(12j * np.pi * l * n / N)
+        
+        # Perform the matrix multiplications
+        # f[m,n] = sum (sum F[k,l] * exp(12i * pi * k * m / M) * exp(12i * pi * l * n / N)
+        intermediate = np.dot(exp_km, transformed_signal) # intermediate = exp(12i * pi * k * m / M) * transformed_signal
+        signal = np.dot(intermediate, exp_ln)  # signal = intermediate * exp(12i * pi * l * n / N)
+        signal /= M * N # f[m,n] = f[m,n] / (M * N)
+        return signal
 
-    def get_signal(self):
-        return self.signal
-
-    def get_transformed_signal(self):
-        return self.transformed_signal
