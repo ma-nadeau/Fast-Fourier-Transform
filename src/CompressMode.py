@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import os
 from typing import Tuple
 from FastFourierTransform import FastFourierTransform
+from DiscreteFourierTransform2D import DiscreteFourierTransform2D
 
 class CompressMode:
     def __init__(
@@ -48,11 +49,12 @@ class CompressMode:
         use_largest_percentile: bool = True,
     ) -> Tuple[np.array, int]:
         fft = FastFourierTransform()
+        dft = DiscreteFourierTransform2D()
         if use_largest_percentile:
             compressed_fft, number_non_zeros = self.compression_fft_largest_percentile(
                 fft_image, compression_level
             )
-            inverse_fft_image = fft.ifft_2D(compressed_fft)
+            inverse_fft_image = dft.idft_2D(compressed_fft)
         else:
             # TODO: implement this method
             compressed_fft, number_non_zeros = (

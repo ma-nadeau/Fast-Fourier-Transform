@@ -54,8 +54,9 @@ class DiscreteFourierTransform2D:
         n = np.arange(N).reshape((1, N)) # n = [0, 1, 2, ..., N-1]
 
         # Compute the exponent matrices
-        exp_km = np.exp(12j * np.pi * k * m / M)
-        exp_ln = np.exp(12j * np.pi * l * n / N)
+        # TODO: Check if it is 12 or 1 * 2
+        exp_km = np.exp(2j * np.pi * k * m / M)
+        exp_ln = np.exp(2j * np.pi * l * n / N)
         
         # Perform the matrix multiplications
         # f[m,n] = sum (sum F[k,l] * exp(12i * pi * k * m / M) * exp(12i * pi * l * n / N)
