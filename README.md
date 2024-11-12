@@ -7,6 +7,8 @@
 
 - [How to Run](#how-to-run)
 
+- [Installation](#installation)
+
 
 ## Contributors
 
@@ -38,4 +40,12 @@ python fft.py [-m mode] [-i image]
 
 **Note:** The files should be placed in the `Figures` folder.
 
+## Installation
+
+To install the required packages, run the following command:
+
+```bash
+pip install numpy opencv-python matplotlib
+```
+This will install `numpy`, `opencv-python`, and `matplotlib` for your project.
 
