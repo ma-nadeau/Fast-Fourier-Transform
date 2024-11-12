@@ -1,12 +1,16 @@
 # Fast Fourier Transform for Image Processing (Python 3.12)
 
 ## Table of Contents
-
+- [Contributors](#contributors)
+  
 - [Description](#description)
 
 - [How to Run](#how-to-run)
 
 
+## Contributors
+
+Created by [Marc-Antoine Nadeau](https://github.com/ma-nadeau) and [Karl Bridi](https://github.com/Kalamar136)
 
 ## Description
 
