@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 from FastFourierTransform import FastFourierTransform
-from DiscreteFourierTransform2D import DiscreteFourierTransform2D
+from DiscreteFourierTransform import DiscreteFourierTransform
 
 class DenoiseMode:
     def __init__(
@@ -19,7 +19,7 @@ class DenoiseMode:
     def denoise(self) -> np.ndarray:
 
         fft = FastFourierTransform()
-        dft = DiscreteFourierTransform2D()
+        dft = DiscreteFourierTransform()
         transformed_signal = fft.fft_2D(self.original_image)
 
         # TODO: What is considered a high frequency?

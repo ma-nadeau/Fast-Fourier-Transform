@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 import os
 from typing import Tuple
 from FastFourierTransform import FastFourierTransform
-from DiscreteFourierTransform2D import DiscreteFourierTransform2D
+from DiscreteFourierTransform import DiscreteFourierTransform
+
 
 class CompressMode:
     def __init__(
@@ -21,7 +22,6 @@ class CompressMode:
     def run_FFT(self) -> np.ndarray:
         fft = FastFourierTransform()
         return fft.fft_2D(self.original_image)
-    
 
     def compression_fft_largest_percentile(
         self, fft_image: np.array, compression_level: float
@@ -48,8 +48,8 @@ class CompressMode:
         compression_level: float,
         use_largest_percentile: bool = True,
     ) -> Tuple[np.array, int]:
-        fft = FastFourierTransform()
-        dft = DiscreteFourierTransform2D()
+        
+        dft = DiscreteFourierTransform()
         if use_largest_percentile:
             compressed_fft, number_non_zeros = self.compression_fft_largest_percentile(
                 fft_image, compression_level
@@ -74,7 +74,9 @@ class CompressMode:
             compressed_image, number_non_zeros = self.compress_and_inverse_fft(
                 self.fft_image, level
             )
-            print(f"Compression Level: {level}%, Non-Zero Coefficients: {number_non_zeros}")
+            print(
+                f"Compression Level: {level}%, Non-Zero Coefficients: {number_non_zeros}"
+            )
 
             plt.subplot(2, 3, i + 1)
             plt.imshow(compressed_image.real, cmap="gray")
@@ -88,7 +90,6 @@ class CompressMode:
 
         plt.savefig(os.path.join(self.folder_path, "Compressed_Images.png"))
 
-    
     def run_compression(self) -> None:
         self.run_FFT()
         self.plot_images()
