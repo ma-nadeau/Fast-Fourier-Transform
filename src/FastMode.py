@@ -2,6 +2,7 @@ from matplotlib.colors import LogNorm
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+from FastFourierTransform import FastFourierTransform
 
 
 class FastMode:
@@ -18,8 +19,8 @@ class FastMode:
         self.plot_images()
 
     def run_FFT(self) -> np.ndarray:
-        # FIXME: This is temporary, will be replaced with our implementation of the FFT
-        return np.fft.fft2(self.original_image)
+        fft = FastFourierTransform()
+        return fft.fft_2D(self.original_image)
 
     def plot_images(self) -> None:
         """Plot the original image and its Fourier transform."""

@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-
+from FastFourierTransform import FastFourierTransform
+from DiscreteFourierTransform import DiscreteFourierTransform
 
 class DenoiseMode:
     def __init__(
@@ -17,22 +18,20 @@ class DenoiseMode:
 
     def denoise(self) -> np.ndarray:
 
-        # FIXME: This is temporary, will be replaced with our FFT
-        transformed_signal = np.fft.fft2(self.original_image)
+        fft = FastFourierTransform()
+        dft = DiscreteFourierTransform()
+        transformed_signal = fft.fft_2D(self.original_image)
 
-        # Apply a simple denoising technique (e.g., thresholding)
         # TODO: What is considered a high frequency?
         threshold = np.mean(transformed_signal) + 2 * np.std(transformed_signal)
-        
+
         denoised_signal = np.where(
             transformed_signal > threshold, transformed_signal, 0
         )
 
-        # FIXME: This is temporary, will be replaced with our FFT
-        # Inverse DFT to get the denoised image
-        denoised_image = np.fft.ifft2(denoised_signal).real
+        denoised_image = dft.idft_2D(denoised_signal)
 
-        return denoised_image
+        return denoised_image.real
 
     def plot_images(self) -> None:
         """Plot the original image and its Denoise image."""

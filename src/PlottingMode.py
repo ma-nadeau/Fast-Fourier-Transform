@@ -3,8 +3,8 @@ import numpy as np
 import os
 from typing import Callable, List
 import time
-from DiscreteFourierTransform2D import DiscreteFourierTransform2D
-
+from DiscreteFourierTransform import DiscreteFourierTransform
+from FastFourierTransform import FastFourierTransform
 
 class PlottingMode:
     def __init__(
@@ -53,12 +53,12 @@ class PlottingMode:
         self.naive_std = np.array([])
 
     def fft_method(self, arr: np.array) -> np.array:
-        # FIXME: Implement and use our implementation of the FFT method
-        return np.fft.fft2(arr)
+        fft = FastFourierTransform()
+        return fft.fft_2D(arr)
 
     def naive_ft_method(self, arr: np.array) -> np.array:
-        naiveFT = DiscreteFourierTransform2D(arr)
-        return naiveFT.compute_dft_2d()
+        dft = DiscreteFourierTransform()
+        return dft.dft_2D(arr)
 
     def plot_average_runtime(
         self,

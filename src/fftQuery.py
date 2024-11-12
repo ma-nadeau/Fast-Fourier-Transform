@@ -75,6 +75,7 @@ class fftQuery:
 
     @classmethod
     def convert_image_to_numpy_array(cls, image_name: str) -> np.ndarray:
+        #TODO: Ensure sides are 2^n for FFT
         return np.array(cv2.imread(image_name, cv2.IMREAD_GRAYSCALE))
 
     def get_mode(self) -> str:
