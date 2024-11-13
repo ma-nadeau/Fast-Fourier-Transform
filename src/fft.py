@@ -14,13 +14,14 @@ from QueryMode import Mode
 def main():
     try:
         query = fftQuery.parseArguments(sys.argv[1:])
-        image = query.get_image()
+        
+        image = fftQuery.convert_image_to_numpy_array(query.image_name)
 
     except fftQueryParsingError as error:
         print("ERROR\tIncorrect input syntax: " + str(error))
         exit()
 
-    case = query.get_mode()
+    case = query.mode
 
     if case == Mode.FAST:
         FastMode(np.array(image, dtype=np.float64))

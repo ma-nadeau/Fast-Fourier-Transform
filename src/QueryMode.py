@@ -5,10 +5,8 @@ class Mode(Enum):
     COMPRESS = 3
     PLOT_RUNTIME = 4
 
-    @staticmethod
-    def from_value(mode_input):
-        try:
-            return Mode(int(mode_input))
-        except ValueError:
-            raise ValueError(f"Invalid mode input: {mode_input}. Must be an integer between 1 and 4.")
-
+    @classmethod
+    def from_value(cls, value: int):
+        if value not in [typ.value for typ in Mode]:
+            raise ValueError(f"Invalid mode input: {value}. Must be an integer between 1 and 4.")
+        return cls(value)
