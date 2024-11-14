@@ -19,15 +19,19 @@ class FastFourierTransform:
         k = np.arange(N // 2)
 
         # Compute Twiddle factors
+        # factor = [[exp(-2j * pi * 0 / N)], [exp(-2j * pi * 1 / N)], ..., [exp(-2j * pi * (N/2-1) / N)]]
         factor = np.exp(-2j * np.pi * k / N)
 
-        # for k in range(N // 2):
         # X[k] = X_even[k] + factor[k] * X_odd[k]
+        # even = [X_even[0] + factor[0] * X_odd[0], X_even[1] + factor[1] * X_odd[1], ..., X_even[N/2-1] + factor[N/2-1] * X_odd[N/2-1]]
         even = X_even + factor * X_odd
-        #    X[k + N // 2] = X_even[k] - factor[k] * X_odd[k]
+        
+        # X[k + N // 2] = X_even[k] - factor[k] * X_odd[k]
+        # odd = [X_even[0] - factor[0] * X_odd[0], X_even[1] - factor[1] * X_odd[1], ..., X_even[N/2-1] - factor[N/2-1] * X_odd[N/2-1]]
         odd = X_even - factor * X_odd
 
         # Concatenate the even and odd indices
+        # result = [X[0], X[1], ..., X[N/2-1], X[N/2], X[N/2+1], ..., X[N-1]]
         result = np.concatenate([even, odd])
         return result
 
