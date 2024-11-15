@@ -4,6 +4,7 @@ class Mode(Enum):
     DENOISE = 2
     COMPRESS = 3
     PLOT_RUNTIME = 4
+    DFT = 5
 
     @staticmethod
     def from_value(mode_input):

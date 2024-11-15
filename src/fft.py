@@ -7,6 +7,7 @@ from FastMode import FastMode
 from DenoiseMode import DenoiseMode
 from CompressMode import CompressMode
 from PlottingMode import PlottingMode
+from DiscreteMode import DiscreteMode
 from QueryMode import Mode
 
 
@@ -30,6 +31,8 @@ def main():
         CompressMode(np.array(image, dtype=np.float64))
     elif case == Mode.PLOT_RUNTIME:
         PlottingMode()
+    elif case == Mode.DFT:
+        DiscreteMode()
     else:
         print("ERROR\tUnknown mode: " + case)
         exit()
