@@ -1,21 +1,82 @@
+import cv2
 import numpy as np
 
+def compute_exp_coeffs(signal_size : int, inverse : bool = False):
+    """Computes the matrix of exponents coefficients for the DFT and FFT"""
+
+    signal_range = np.arange(signal_size) # signal_range = [0, 1, 2, ..., N-1]
+
+    # This matrix represents all combinations of k * n in the [i]dft
+    matrix_kn = np.outer(signal_range, signal_range)
+    # Note
+    # k outer n =
+    # [[0×0, 0×1, 0×2, ..., 0×(N-1)],
+    #  [1×0, 1×1, 1×2, ..., 1×(N-1)],
+    #  [2×0, 2×1, 2×2, ..., 2×(N-1)],
+    #  ...,
+    #  [(N-1)×0, (N-1)×1, (N-1)×2, ..., (N-1)×(N-1)]]
+    
+    return np.exp((1 if inverse else -1) * 2j * np.pi * matrix_kn / signal_size)
+
+# Precomputed coefficients for FFT
+dft_precomputed_exp_coeffs4 = compute_exp_coeffs(4)
+idft_precomputed_exp_coeffs4 = compute_exp_coeffs(4, True)
 
 def dft_naive_1D(signal : np.ndarray, inverse : bool = False) -> np.ndarray:
+    """Computes the 1D [Inverse] Discrete Fourier Transform  (DFT) of the input signal.
+    This method transforms the spatial domain signal into its frequency domain representation.
+    Returns:
+        np.ndarray: The transformed 1D signal in the frequency domain.
+    """
     # Important metrics
-    N = signal.shape[0]
-    signal_range = np.arange(0,N)
+    N = signal.size
     
-    # The idea is to see DFT as matrix multiplication of signal and 
-    # Exponent matrix
-    exp_array = lambda k : np.exp((1 if inverse else -1) * 2j*np.pi*signal_range*k/N)
-    exp_matrix = np.transpose(np.array([exp_array(k) for k in signal_range]))
+    # Use precomputed coeffs if N is 4 for the FFT implementation
+    # which uses the naive dft
+    if N == 4:
+        exp_kn = (dft_precomputed_exp_coeffs4 if not inverse else idft_precomputed_exp_coeffs4)
+    else:
+        exp_kn = compute_exp_coeffs(N, inverse)
+    
+    return signal @ exp_kn * (1/N if inverse else 1)
 
-    transformed_signal = (signal @ exp_matrix) * (1/N if inverse else 1)
+def fft_1D(signal: np.ndarray, inverse : bool = False) -> np.ndarray:
+    """Compute the 1D Fast Fourier Transform using the Cooley-Tukey algorithm."""
 
-    return np.array((transformed_signal).reshape(transformed_signal.shape[0]))
+    # Important metrics
+    N = signal.size
+    if N <= 4:
+        return dft_naive_1D(signal, inverse)
 
-def dft_naive_2D(signal : np.ndarray, inverse : bool = False) -> np.ndarray:
-    transformed_row_signal = np.apply_along_axis(dft_naive_1D, axis=1, arr=signal, inverse = inverse)
-    transformed_signal = np.apply_along_axis(dft_naive_1D, axis=0, arr=transformed_row_signal, inverse = inverse)
+    # Split the signal into even and odd indices and Recursively compute FFT
+    X_even = fft_1D(signal[::2], inverse)  # Start at 0 and increment by 2
+    X_odd = fft_1D(signal[1::2], inverse)  # Start at 1 and increment by 2
+
+    # Create a vector for such that k = 0, 1, 2, ..., N/2-1
+    k = np.arange(N // 2)
+
+    # Compute Twiddle factors
+    factor = np.exp((1 if inverse else -1) * 2j * np.pi * k / N)
+
+    # for k in range(N // 2):
+    # X[k] = X_even[k] + factor[k] * X_odd[k]
+    first_half = X_even + factor * X_odd
+
+    #    X[k + N // 2] = X_even[k] - factor[k] * X_odd[k]
+    second_half = X_even - factor * X_odd
+
+    # Concatenate the first and second half
+    return (1/2 if inverse else 1) * np.concatenate([first_half, second_half])
+
+def dft_2D(signal : np.ndarray, inverse : bool = False, fast : bool = True) -> np.ndarray:
+    transformed_row_signal = np.apply_along_axis(fft_1D if fast else dft_naive_1D, axis=1, arr=signal, inverse = inverse)
+    transformed_signal = np.apply_along_axis(fft_1D if fast else dft_naive_1D, axis=0, arr=transformed_row_signal, inverse = inverse)
     return transformed_signal
+
+def rescale_image_power2(image):
+    old_height, old_width = image.shape
+    new_dimensions = (nearest_power2(old_width), nearest_power2(old_height))
+    return cv2.resize(image, new_dimensions)
+
+def nearest_power2(n : int):
+    return 2 ** int(np.ceil(np.log2(n)))
