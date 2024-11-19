@@ -15,7 +15,7 @@ def compute_exp_coeffs(signal_size : int, inverse : bool = False):
     #  [2×0, 2×1, 2×2, ..., 2×(N-1)],
     #  ...,
     #  [(N-1)×0, (N-1)×1, (N-1)×2, ..., (N-1)×(N-1)]]
-    
+
     return np.exp((1 if inverse else -1) * 2j * np.pi * matrix_kn / signal_size)
 
 # Precomputed coefficients for FFT
@@ -31,22 +31,26 @@ def dft_naive_1D(signal : np.ndarray, inverse : bool = False) -> np.ndarray:
     # Important metrics
     N = signal.size
     
-    # Use precomputed coeffs if N is 4 for the FFT implementation
-    # which uses the naive dft
-    if N == 4:
-        exp_kn = (dft_precomputed_exp_coeffs4 if not inverse else idft_precomputed_exp_coeffs4)
-    else:
-        exp_kn = compute_exp_coeffs(N, inverse)
+    # Matrix of exponent coefficients
+    exp_kn = compute_exp_coeffs(N, inverse)
     
-    return signal @ exp_kn * (1/N if inverse else 1)
+    # DFT as a matrix multiplication
+    # Each sum can be viewed as a dot product so the whole signal
+    # can be obtained by matrix multiplcation (which is essentially many dot products)
+    return (signal @ exp_kn) * (1/N if inverse else 1)
 
 def fft_1D(signal: np.ndarray, inverse : bool = False) -> np.ndarray:
     """Compute the 1D Fast Fourier Transform using the Cooley-Tukey algorithm."""
 
     # Important metrics
     N = signal.size
-    if N <= 4:
+
+    # If the signal length is too small then just use dft
+    if N < 4:
         return dft_naive_1D(signal, inverse)
+    # If the signal length is 4 then we can leverage precomputed exponents
+    elif N == 4:
+        return (signal @ (dft_precomputed_exp_coeffs4 if not inverse else idft_precomputed_exp_coeffs4)) * (1/N if inverse else 1)
 
     # Split the signal into even and odd indices and Recursively compute FFT
     X_even = fft_1D(signal[::2], inverse)  # Start at 0 and increment by 2
