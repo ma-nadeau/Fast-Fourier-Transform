@@ -122,12 +122,12 @@ def ifft_1D(signal: np.ndarray) -> np.ndarray:
     # Concatenate the first and second half
     return (1/2) * np.concatenate([first_half, second_half])
 
-def dft_2D(signal : np.ndarray, fast : bool = True) -> np.ndarray:
+def transform_2D(signal : np.ndarray, fast : bool = True) -> np.ndarray:
     transformed_row_signal = np.apply_along_axis(fft_1D if fast else dft_naive_1D, axis=1, arr=signal)
     transformed_signal = np.apply_along_axis(fft_1D if fast else dft_naive_1D, axis=0, arr=transformed_row_signal)
     return transformed_signal
 
-def idft_2D(signal : np.ndarray, fast : bool = True) -> np.ndarray:
+def inverse_transform_2D(signal : np.ndarray, fast : bool = True) -> np.ndarray:
     transformed_row_signal = np.apply_along_axis(ifft_1D if fast else idft_naive_1D, axis=1, arr=signal)
     transformed_signal = np.apply_along_axis(ifft_1D if fast else idft_naive_1D, axis=0, arr=transformed_row_signal)
     return transformed_signal
