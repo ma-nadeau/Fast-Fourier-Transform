@@ -3,6 +3,7 @@
 import os
 import numpy as np
 import sys
+from CompressMode import plot_compression_mode
 from DenoiseMode import plot_denoise_mode
 from fftQuery import fftQuery, fftQueryParsingError
 from FastMode import plot_fast_mode
@@ -28,7 +29,7 @@ def main():
     elif query.mode == Mode.DENOISE:
         plot_denoise_mode(original_image)
     elif query.mode == Mode.COMPRESS:
-        CompressMode(np.array(BGR_array, dtype=np.float64))
+        plot_compression_mode(original_image)
     elif query.mode == Mode.PLOT_RUNTIME:
         PlottingMode()
     else:
