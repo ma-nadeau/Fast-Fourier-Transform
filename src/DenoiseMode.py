@@ -22,14 +22,21 @@ def denoise_image(image : np.ndarray):
 
     # Get rid of high frequencies' contributions
     # Here we are considering that the frequencies above 15/16pi are high frequencies
-    pi_percentage = 1/16
+    pi_percentage = 1/4
     threshold_lo = pi_percentage * np.pi
     threshold_hi = (2 - pi_percentage) * np.pi
+    counter = fft.shape[0] * fft.shape[1] # To determine the number of non-zeros being used
     for row in range(fft.shape[0]):
         for col in range(fft.shape[1]):
-            if threshold_lo < row*2*np.pi/fft.shape[0] < threshold_hi:
+            if threshold_lo < row*2*np.pi/fft.shape[0] < threshold_hi\
+                or threshold_lo < col*2*np.pi/fft.shape[1] < threshold_hi:
                 fft[row, col] = 0
+                counter -= 1
     
+    # Print the number of non-zeroes used and their percentage
+    print(f"DENOISE MODE: The number of non-zeroes used: {counter}.")
+    print(f"They represent: {(counter/(fft.shape[0] * fft.shape[1]) * 100):.2f}% of the original Fourier coefficients.")
+
     return inverse_transform_2D(fft)
 
 def plot_denoise_mode(original_image):
