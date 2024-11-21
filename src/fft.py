@@ -1,18 +1,13 @@
 """ Python program that implemenets the Fast Fourier Transform (FFT) algorithm. """
 
-import os
 import numpy as np
 import sys
 from CompressMode import plot_compression_mode
 from DenoiseMode import plot_denoise_mode
+from PlottingMode import PlottingMode
 from fftQuery import fftQuery, fftQueryParsingError
 from FastMode import plot_fast_mode
-# from DenoiseMode import DenoiseMode
-# from CompressMode import CompressMode
-# from PlottingMode import PlottingMode
 from QueryMode import Mode
-import cv2
-import numpy as np
 
 
 def main():
@@ -31,7 +26,8 @@ def main():
     elif query.mode == Mode.COMPRESS:
         plot_compression_mode(original_image)
     elif query.mode == Mode.PLOT_RUNTIME:
-        PlottingMode()
+        plotter = PlottingMode()
+        plotter.plot_average_runtime()
     else:
         print("ERROR\tUnknown mode: " + query.mode)
         exit()

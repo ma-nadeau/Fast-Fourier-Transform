@@ -3,69 +3,71 @@ import numpy as np
 import os
 from typing import Callable, List
 import time
-from DiscreteFourierTransform import DiscreteFourierTransform
+from FourierTransform import transform_2D
 from FastFourierTransform import FastFourierTransform
 
 class PlottingMode:
-    def __init__(
-        self,
-        folder_path: str = "../Results",
-    ):
-        self.folder_path = folder_path
-        self.time_fft: np.ndarray = np.array([])
-        self.time_naive: np.ndarray = np.array([])
-        self.fft_std: np.ndarray = np.array([])
-        self.naive_std: np.ndarray = np.array([])
+    def __init__(self, powers_2 : List[int] = list(range(5, 11))):
+        self.fft_means: np.ndarray = np.array([])
+        self.naive_means: np.ndarray = np.array([])
+        self.fft_stds: np.ndarray = np.array([])
+        self.naive_stds: np.ndarray = np.array([])
 
-        self.run_experiment()
+        self.run_experiment(powers_2)
 
-    def store_and_compute_runtime(
-        self, func: Callable, *args, storing_location: str, iterations: int = 10
-    ) -> None:
-        total_time = []
-        for _ in range(iterations):
-            time_start = time.time()
-            func(*args)
-            time_end = time.time()
-            total_time.append(time_end - time_start)
+    def run_experiment(self, powers_2: List[int]) -> None:
+        # Clear the time arrays in case the experiment was run more than once
+        self.clear_time_array()
 
-        total_time = np.array(total_time)
-        average_time = total_time.mean()
-        std_time = total_time.std()
-        if storing_location == "fft":
-            self.time_fft = np.append(self.time_fft, average_time)
-            self.fft_std = np.append(self.fft_std, std_time)
-            print(
-                f"Fast Fourier Transform - Average runtime: {average_time} seconds, Standard deviation: {std_time} seconds"
+        for power_2 in powers_2:
+            self.compute_runtime_estimate(
+                power_2, isFFT=True
+            )
+            self.compute_runtime_estimate(
+                power_2, isFFT=False
             )
 
-        elif storing_location == "naive":
-            self.time_naive = np.append(self.time_naive, average_time)
-            self.naive_std = np.append(self.naive_std, std_time)
+        self.powers_2 = powers_2
+        self.plot_average_runtime()
+
+    def compute_runtime_estimate(self, power_2 : int, isFFT : bool, iterations: int = 10) -> None:
+        samples = []
+        array = create_2D_array_of_random_element(power_2)
+        for _ in range(iterations):
+            time_start = time.time()
+            transform_2D(array) if isFFT else transform_2D(array, False)
+            time_end = time.time()
+            samples.append(time_end - time_start)
+
+        samples = np.array(samples)
+        average_time = samples.mean()
+        std_time = samples.std()
+        results = f"Average runtime: {average_time:.2f} seconds, Standard deviation: {std_time:.2f} seconds, Array size: {2**power_2}"
+        if isFFT:
+            self.fft_means = np.append(self.fft_means, average_time)
+            self.fft_stds = np.append(self.fft_stds, std_time)
             print(
-                f"Naive Fourier Transform - Average runtime: {average_time} seconds, Standard deviation: {std_time} seconds"
+                f"Fast Fourier Transform - {results}"
+            )
+        else:
+            self.naive_means = np.append(self.naive_means, average_time)
+            self.naive_stds = np.append(self.naive_stds, std_time)
+            print(
+                f"Naive Fourier Transform - {results}"
             )
 
     def clear_time_array(self) -> None:
-        self.time_fft = np.array([])
-        self.time_naive = np.array([])
-        self.fft_std = np.array([])
-        self.naive_std = np.array([])
+        self.fft_means = np.array([])
+        self.naive_means = np.array([])
+        self.fft_stds = np.array([])
+        self.naive_stds = np.array([])
 
-    def fft_method(self, arr: np.array) -> np.array:
-        fft = FastFourierTransform()
-        return fft.fft_2D(arr)
-
-    def naive_ft_method(self, arr: np.array) -> np.array:
-        dft = DiscreteFourierTransform()
-        return dft.dft_2D(arr)
-
-    def plot_average_runtime(
-        self,
-        sizes: np.array,
-    ) -> None:
+    def plot_average_runtime(self) -> None:
         
-        plt.suptitle("Runtime of FFT", fontsize=20)
+        sizes = 2**np.array(self.powers_2)
+        
+        plt.suptitle("Runtime of FFT", fontsize=18)
+
         # Define error bar colors and transparency
         errorbar_alpha = 0.3
         fft_color = "blue"
@@ -74,8 +76,8 @@ class PlottingMode:
         # Plot FFT runtimes
         plt.errorbar(
             sizes,
-            self.time_fft,
-            yerr=2 * self.fft_std,
+            self.fft_means,
+            yerr=2 * self.fft_stds,
             label="FFT",
             color=fft_color,
             fmt="-o",
@@ -88,8 +90,8 @@ class PlottingMode:
         # Plot Naive FT runtimes
         plt.errorbar(
             sizes,
-            self.time_naive,
-            yerr=2 * self.naive_std,
+            self.naive_means,
+            yerr=2 * self.naive_stds,
             label="Naive FT",
             color=naive_color,
             fmt="-o",
@@ -99,30 +101,9 @@ class PlottingMode:
             alpha=errorbar_alpha,
         )
         plt.grid()
-        if not os.path.exists(self.folder_path):
-            os.makedirs(self.folder_path)
+        plt.show()
 
-        plt.savefig(os.path.join(self.folder_path, "Runtime_Analysis.png"))
-
-    def run_experiment(self, power: List[int] = list(range(5, 11))) -> None:
-        # TODO: Verify if there's a typo in the document. I assume it should be 2^5 to 2^10 instead of 25 to 210.
-        sizes = np.array([2**i for i in power])
-        for size in sizes:
-            array = create_2D_array_of_random_element(size)
-            self.store_and_compute_runtime(
-                self.fft_method, array, storing_location="fft"
-            )
-            self.store_and_compute_runtime(
-                self.naive_ft_method, array, storing_location="naive"
-            )
-
-        self.plot_average_runtime(sizes)
-        self.clear_time_array()
-        pass
-
-
-def create_2D_array_of_random_element(size: int) -> np.array:
+def create_2D_array_of_random_element(power_2: int) -> np.array:
     """Create 2D arrays of random elements of various sizes (sizes must be square and powers of 2"""
-    if (size & (size - 1)) != 0 or size <= 0:
-        raise ValueError("Size must be a positive power of 2.")
+    size = 2 ** power_2
     return np.random.rand(size, size)
