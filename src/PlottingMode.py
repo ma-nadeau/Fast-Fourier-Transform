@@ -1,13 +1,13 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-from typing import Callable, List
+from typing import List
 import time
 from FourierTransform import transform_2D
-from FastFourierTransform import FastFourierTransform
+
 
 class PlottingMode:
-    def __init__(self, powers_2 : List[int] = list(range(5, 11))):
+    def __init__(self, powers_2: List[int] = list(range(5, 11))):
         self.fft_means: np.ndarray = np.array([])
         self.naive_means: np.ndarray = np.array([])
         self.fft_stds: np.ndarray = np.array([])
@@ -20,17 +20,15 @@ class PlottingMode:
         self.clear_time_array()
 
         for power_2 in powers_2:
-            self.compute_runtime_estimate(
-                power_2, isFFT=True
-            )
-            self.compute_runtime_estimate(
-                power_2, isFFT=False
-            )
+            self.compute_runtime_estimate(power_2, isFFT=True)
+            self.compute_runtime_estimate(power_2, isFFT=False)
 
         self.powers_2 = powers_2
         self.plot_average_runtime()
 
-    def compute_runtime_estimate(self, power_2 : int, isFFT : bool, iterations: int = 10) -> None:
+    def compute_runtime_estimate(
+        self, power_2: int, isFFT: bool, iterations: int = 10
+    ) -> None:
         samples = []
         array = create_2D_array_of_random_element(power_2)
         for _ in range(iterations):
@@ -46,15 +44,11 @@ class PlottingMode:
         if isFFT:
             self.fft_means = np.append(self.fft_means, average_time)
             self.fft_stds = np.append(self.fft_stds, std_time)
-            print(
-                f"Fast Fourier Transform - {results}"
-            )
+            print(f"Fast Fourier Transform - {results}")
         else:
             self.naive_means = np.append(self.naive_means, average_time)
             self.naive_stds = np.append(self.naive_stds, std_time)
-            print(
-                f"Naive Fourier Transform - {results}"
-            )
+            print(f"Naive Fourier Transform - {results}")
 
     def clear_time_array(self) -> None:
         self.fft_means = np.array([])
@@ -63,10 +57,10 @@ class PlottingMode:
         self.naive_stds = np.array([])
 
     def plot_average_runtime(self) -> None:
-        
-        sizes = 2**np.array(self.powers_2)
-        
-        plt.suptitle("Runtime of FFT", fontsize=18)
+
+        sizes = 2 ** np.array(self.powers_2)
+
+        plt.suptitle("Runtime of FFT", fontsize=18, fontweight="bold")
 
         # Define error bar colors and transparency
         errorbar_alpha = 0.3
@@ -78,7 +72,7 @@ class PlottingMode:
             sizes,
             self.fft_means,
             yerr=2 * self.fft_stds,
-            label="FFT",
+            label="Fast Fourier Transform",
             color=fft_color,
             fmt="-o",
             ecolor=fft_color,
@@ -92,7 +86,7 @@ class PlottingMode:
             sizes,
             self.naive_means,
             yerr=2 * self.naive_stds,
-            label="Naive FT",
+            label="Naive Fourier Transform",
             color=naive_color,
             fmt="-o",
             ecolor=naive_color,
@@ -100,10 +94,19 @@ class PlottingMode:
             capsize=3,
             alpha=errorbar_alpha,
         )
-        plt.grid()
+        plt.legend()
+        plt.xlabel("Array size", fontweight="bold")
+        plt.ylabel("Time (s)", fontweight="bold")
+        plt.grid(True, which="both", linestyle="--", linewidth=0.5)
+
+        folder_path = "../Results"
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+        plt.savefig(os.path.join(folder_path, "Runtime_Analysis.png"))
         plt.show()
+
 
 def create_2D_array_of_random_element(power_2: int) -> np.array:
     """Create 2D arrays of random elements of various sizes (sizes must be square and powers of 2"""
-    size = 2 ** power_2
+    size = 2**power_2
     return np.random.rand(size, size)

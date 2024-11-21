@@ -1,6 +1,5 @@
 """ Python program that implemenets the Fast Fourier Transform (FFT) algorithm. """
 
-import numpy as np
 import sys
 from CompressMode import plot_compression_mode
 from DenoiseMode import plot_denoise_mode
@@ -12,11 +11,11 @@ from QueryMode import Mode
 
 def main():
     try:
-        query = fftQuery.parseArguments(sys.argv[1:])        
+        query = fftQuery.parseArguments(sys.argv[1:])
     except fftQueryParsingError as error:
         print("ERROR\tIncorrect input syntax: " + str(error))
         exit()
-    
+
     original_image = fftQuery.convert_image_to_numpy_array(query.image_name)
 
     if query.mode == Mode.FAST:

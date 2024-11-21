@@ -19,7 +19,9 @@ class fftQuery:
     - The filename of the image for the DFT (default: 'moonlanding.png').
     """
 
-    def __init__(self, mode: Mode = Mode.FAST, image_name: str = '../Figures/moonlanding.png'):
+    def __init__(
+        self, mode: Mode = Mode.FAST, image_name: str = "../Figures/moonlanding.png"
+    ):
         self.mode = mode
         self.image_name = image_name
 
@@ -35,7 +37,7 @@ class fftQuery:
     @classmethod
     def parseOptionalArguments(cls, argv: list[str]) -> dict:
         optionalArgs = {}
-        
+
         while len(argv) > 0:
             switch = argv.pop(0)
             availableSwitches = ["-m", "-i"]
@@ -54,7 +56,8 @@ class fftQuery:
                 case "-i":
                     if optionalArgs.get("image_name"):
                         raise fftQueryParsingError(cls.utilisation)
-                    image_name = argv.pop(0)
+                    image_name = "../Figures/" + argv.pop(0)
+                    
                     # Check if the image file exists
                     if not os.path.isfile(image_name):
                         raise fftQueryParsingError(
@@ -65,9 +68,8 @@ class fftQuery:
 
     @staticmethod
     def convert_image_to_numpy_array(image_name: str) -> np.ndarray:
-        #TODO: Ensure sides are 2^n for FFT
         return np.array(cv2.imread(image_name, cv2.IMREAD_GRAYSCALE))
-    
+
     def __repr__(self):
         return f"[mode:{self.mode.name}, image:{self.image_name}]"
 
