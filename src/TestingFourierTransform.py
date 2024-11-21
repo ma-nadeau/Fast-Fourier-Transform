@@ -6,7 +6,7 @@ import os
 
 def compute_error(benchmark_model: np.ndarray, custom_model: np.ndarray) -> np.ndarray:
     """Compute the error between the FFT and Naive Fourier Transform."""
-    return np.abs(benchmark_model - custom_model) / np.abs(custom_model)
+    return np.abs(benchmark_model - custom_model)
 
 
 def plot_error(
