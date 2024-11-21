@@ -56,7 +56,7 @@ class PlottingMode:
         self.fft_stds = np.array([])
         self.naive_stds = np.array([])
 
-    def plot_average_runtime(self) -> None:
+    def plot_average_runtime(self, save_plot: bool = False) -> None:
 
         sizes = 2 ** np.array(self.powers_2)
 
@@ -98,11 +98,11 @@ class PlottingMode:
         plt.xlabel("Array size", fontweight="bold")
         plt.ylabel("Time (s)", fontweight="bold")
         plt.grid(True, which="both", linestyle="--", linewidth=0.5)
-
-        folder_path = "../Results"
-        if not os.path.exists(folder_path):
-            os.makedirs(folder_path)
-        plt.savefig(os.path.join(folder_path, "Runtime_Analysis.png"))
+        if save_plot:
+            folder_path = "../Results"
+            if not os.path.exists(folder_path):
+                os.makedirs(folder_path)
+            plt.savefig(os.path.join(folder_path, "Runtime_Analysis.png"))
         plt.show()
 
 

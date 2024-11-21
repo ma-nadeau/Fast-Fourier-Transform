@@ -5,7 +5,9 @@ import os
 from FourierTransform import rescale_image_power2, transform_2D
 
 
-def plot_fast_mode(original_image: np.ndarray, image_name: str) -> None:
+def plot_fast_mode(
+    original_image: np.ndarray, image_name: str, save_plot: bool = False
+) -> None:
     """Plot the original image and its Fourier transform."""
 
     # First scale the image
@@ -28,9 +30,10 @@ def plot_fast_mode(original_image: np.ndarray, image_name: str) -> None:
 
     plt.tight_layout()
 
-    folder_path = "../Results"
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
+    if save_plot:
+        folder_path = "../Results"
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+        plt.savefig(os.path.join(folder_path, f"{image_name}_FastMode_FFT.png"))
 
-    plt.savefig(os.path.join(folder_path, f"{image_name}_FastMode_FFT.png"))
     plt.show()

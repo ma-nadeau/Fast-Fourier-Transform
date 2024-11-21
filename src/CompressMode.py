@@ -21,7 +21,9 @@ def compress_image(image: np.ndarray, percentile_percentage: int) -> np.ndarray:
     return np.real(inverse_transform_2D(fft)), non_zero_count
 
 
-def plot_compression_mode(original_image: np.ndarray, image_name: str) -> None:
+def plot_compression_mode(
+    original_image: np.ndarray, image_name: str, save_plot: bool = False
+) -> None:
     """Plot the original image and its compressed images at different levels."""
     # First scale the image
     scaled_image = rescale_image_power2(original_image)
@@ -45,10 +47,10 @@ def plot_compression_mode(original_image: np.ndarray, image_name: str) -> None:
         )
 
     plt.tight_layout()
+    if save_plot:
+        folder_path = "../Results"
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
 
-    folder_path = "../Results"
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-
-    plt.savefig(os.path.join(folder_path, f"{image_name}_Compressed_Images.png"))
+        plt.savefig(os.path.join(folder_path, f"{image_name}_Compressed_Images.png"))
     plt.show()

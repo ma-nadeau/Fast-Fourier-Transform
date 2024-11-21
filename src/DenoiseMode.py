@@ -28,7 +28,9 @@ def denoise_image(image: np.ndarray) -> np.ndarray:
     return np.real(inverse_transform_2D(fft)), non_zeroes
 
 
-def plot_denoise_mode(original_image: np.ndarray, image_name: str) -> None:
+def plot_denoise_mode(
+    original_image: np.ndarray, image_name: str, save_plot: bool = False
+) -> None:
     """Plot the original image and its Denoise image."""
 
     # First scale the image
@@ -57,10 +59,10 @@ def plot_denoise_mode(original_image: np.ndarray, image_name: str) -> None:
     )
 
     plt.tight_layout()
+    if save_plot:
+        folder_path = "../Results"
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
 
-    folder_path = "../Results"
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-
-    plt.savefig(os.path.join(folder_path, f"{image_name}_Denoised_Image.png"))
+        plt.savefig(os.path.join(folder_path, f"{image_name}_Denoised_Image.png"))
     plt.show()
