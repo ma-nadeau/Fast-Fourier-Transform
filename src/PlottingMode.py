@@ -7,11 +7,12 @@ from FourierTransform import transform_2D
 
 
 class PlottingMode:
-    def __init__(self, powers_2: List[int] = list(range(5, 11))):
+    def __init__(self, powers_2: List[int] = list(range(5, 11)), save_plot: bool = False):
         self.fft_means: np.ndarray = np.array([])
         self.naive_means: np.ndarray = np.array([])
         self.fft_stds: np.ndarray = np.array([])
         self.naive_stds: np.ndarray = np.array([])
+        self.save_plot = save_plot
 
         self.run_experiment(powers_2)
 
@@ -95,10 +96,10 @@ class PlottingMode:
             alpha=errorbar_alpha,
         )
         plt.legend()
-        plt.xlabel("Array size", fontweight="bold")
+        plt.xlabel("Matrix Size", fontweight="bold")
         plt.ylabel("Time (s)", fontweight="bold")
         plt.grid(True, which="both", linestyle="--", linewidth=0.5)
-        if save_plot:
+        if self.save_plot:
             folder_path = "../Results"
             if not os.path.exists(folder_path):
                 os.makedirs(folder_path)
