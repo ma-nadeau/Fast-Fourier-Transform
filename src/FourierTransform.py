@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 
-def compute_exp_coeffs(signal_size: int, inverse: bool = False):
+def compute_exp_coeffs(signal_size: int, inverse: bool = False) -> np.ndarray:
     """Computes the matrix of exponents coefficients for the DFT and FFT"""
 
     signal_range = np.arange(signal_size)  # signal_range = [0, 1, 2, ..., N-1]

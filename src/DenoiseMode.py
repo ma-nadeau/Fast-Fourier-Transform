@@ -4,7 +4,7 @@ import os
 from FourierTransform import transform_2D, rescale_image_power2, inverse_transform_2D
 
 
-def denoise_image(image: np.ndarray):
+def denoise_image(image: np.ndarray) -> np.ndarray:
     # First switch to frequency domain
     fft = transform_2D(image)
 
@@ -28,7 +28,7 @@ def denoise_image(image: np.ndarray):
     return np.real(inverse_transform_2D(fft)), non_zeroes
 
 
-def plot_denoise_mode(original_image):
+def plot_denoise_mode(original_image: np.ndarray, image_name: str) -> None:
     """Plot the original image and its Denoise image."""
 
     # First scale the image
@@ -62,5 +62,6 @@ def plot_denoise_mode(original_image):
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
 
-    plt.savefig(os.path.join(folder_path, "Denoised_Image.png"))
+    image_name = image_name.split("/")[-1].split(".")[0]
+    plt.savefig(os.path.join(folder_path, f"{image_name}_Denoised_Image.png"))
     plt.show()

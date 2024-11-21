@@ -9,21 +9,21 @@ from FastMode import plot_fast_mode
 from QueryMode import Mode
 
 
-def main():
+def main() -> None:
     try:
         query = fftQuery.parseArguments(sys.argv[1:])
     except fftQueryParsingError as error:
         print("ERROR\tIncorrect input syntax: " + str(error))
         exit()
-
-    original_image = fftQuery.convert_image_to_numpy_array(query.image_name)
+    image_name = query.image_name
+    original_image = fftQuery.convert_image_to_numpy_array(image_name)
 
     if query.mode == Mode.FAST:
-        plot_fast_mode(original_image)
+        plot_fast_mode(original_image, image_name)
     elif query.mode == Mode.DENOISE:
-        plot_denoise_mode(original_image)
+        plot_denoise_mode(original_image, image_name)
     elif query.mode == Mode.COMPRESS:
-        plot_compression_mode(original_image)
+        plot_compression_mode(original_image, image_name)
     elif query.mode == Mode.PLOT_RUNTIME:
         plotter = PlottingMode()
         plotter.plot_average_runtime()

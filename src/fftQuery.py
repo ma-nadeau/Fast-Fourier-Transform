@@ -57,7 +57,7 @@ class fftQuery:
                     if optionalArgs.get("image_name"):
                         raise fftQueryParsingError(cls.utilisation)
                     image_name = "../Figures/" + argv.pop(0)
-                    
+
                     # Check if the image file exists
                     if not os.path.isfile(image_name):
                         raise fftQueryParsingError(
@@ -70,7 +70,7 @@ class fftQuery:
     def convert_image_to_numpy_array(image_name: str) -> np.ndarray:
         return np.array(cv2.imread(image_name, cv2.IMREAD_GRAYSCALE))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"[mode:{self.mode.name}, image:{self.image_name}]"
 
 

@@ -27,6 +27,15 @@ cd src
 python fft.py [-m mode] [-i image]
 ```
 
+### Example  
+Here's an example:  
+```bash
+python fft.py -m 3 -i Triumph.png
+```
+
+where `Triumph.png` is placed in the `/Figures` directory, and you are in the `src` directory
+
+
 ## Features
 
 ### Mode (optional):
@@ -39,6 +48,8 @@ python fft.py [-m mode] [-i image]
 - The filename of the image for the DFT (default: `moonlanding.png`).
 
 **Note:** The files should be placed in the `Figures` folder.
+
+
 
 ## Installation
 

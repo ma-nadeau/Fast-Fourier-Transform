@@ -4,7 +4,7 @@ from FourierTransform import inverse_transform_2D, rescale_image_power2, transfo
 import os
 
 
-def compress_image(image: np.ndarray, percentile_percentage: int):
+def compress_image(image: np.ndarray, percentile_percentage: int) -> np.ndarray:
     # First switch to frequency domain
     fft = transform_2D(image)
     magnitude_fft = np.abs(fft)
@@ -21,7 +21,7 @@ def compress_image(image: np.ndarray, percentile_percentage: int):
     return np.real(inverse_transform_2D(fft)), non_zero_count
 
 
-def plot_compression_mode(original_image: np.ndarray):
+def plot_compression_mode(original_image: np.ndarray, image_name: str) -> None:
     """Plot the original image and its compressed images at different levels."""
     # First scale the image
     scaled_image = rescale_image_power2(original_image)
@@ -49,6 +49,6 @@ def plot_compression_mode(original_image: np.ndarray):
     folder_path = "../Results"
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
-
-    plt.savefig(os.path.join(folder_path, "Compressed_Images.png"))
+    imgage_name = image_name.split("/")[-1].split(".")[0]
+    plt.savefig(os.path.join(folder_path, f"{imgage_name}_Compressed_Images.png"))
     plt.show()
