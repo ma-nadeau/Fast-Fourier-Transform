@@ -4,7 +4,7 @@ from PlottingMode import create_2D_array_of_random_element
 from FourierTransform import transform_2D
 import os
 
-def compute_error(benchmark_model: np.ndarray, custom_model: np.ndarray) -> np.ndarray:
+def compute_difference(benchmark_model: np.ndarray, custom_model: np.ndarray) -> np.ndarray:
     """Compute the error between the FFT and Naive Fourier Transform."""
     return np.abs(benchmark_model - custom_model)
 
@@ -13,8 +13,8 @@ def plot_error(
     fft_model: np.ndarray, custom_fft_model: np.ndarray, custom_dft_model: np.ndarray
 ) -> None:
     """Plot the error between the FFT, custom FFT, and custom DFT."""
-    error_fft = compute_error(fft_model, custom_fft_model)
-    error_dft = compute_error(fft_model, custom_dft_model)
+    error_fft = compute_difference(fft_model, custom_fft_model)
+    error_dft = compute_difference(fft_model, custom_dft_model)
 
     _, axs = plt.subplots(1, 2, figsize=(12, 6))
 
@@ -31,7 +31,7 @@ def plot_error(
     plt.colorbar(image1, ax=axs[1])
 
     plt.suptitle(
-        "Error Comparison of custom model with numpy FFT",
+        "Error Comparison of Custom Model with NumPy FFT",
         fontsize=18,
         fontweight="bold",
     )
