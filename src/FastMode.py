@@ -31,6 +31,6 @@ def plot_fast_mode(original_image: np.ndarray, image_name: str) -> None:
     folder_path = "../Results"
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
-    image_name = image_name.split("/")[-1].split(".")[0]
+
     plt.savefig(os.path.join(folder_path, f"{image_name}_FastMode_FFT.png"))
     plt.show()

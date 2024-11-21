@@ -17,6 +17,9 @@ def main() -> None:
         exit()
     image_name = query.image_name
     original_image = fftQuery.convert_image_to_numpy_array(image_name)
+    
+    # Get the image name without the path and extension
+    image_name = image_name.split("/")[-1].split(".")[0]
 
     if query.mode == Mode.FAST:
         plot_fast_mode(original_image, image_name)

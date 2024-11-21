@@ -62,6 +62,5 @@ def plot_denoise_mode(original_image: np.ndarray, image_name: str) -> None:
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
 
-    image_name = image_name.split("/")[-1].split(".")[0]
     plt.savefig(os.path.join(folder_path, f"{image_name}_Denoised_Image.png"))
     plt.show()
