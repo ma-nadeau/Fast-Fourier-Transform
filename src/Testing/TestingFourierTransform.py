@@ -1,8 +1,12 @@
+import os
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
+
 from PlottingMode import create_2D_array_of_random_element
 from FourierTransform import transform_2D, inverse_transform_2D
-import os
 
 
 def compute_difference(
@@ -24,25 +28,29 @@ def plot_error(
 
     _, axs = plt.subplots(1, 2, figsize=(12, 6))
 
+    # Set the title and subtitle based on the type of transform
     if isInverse:
         subtitleDFT = "Error Custom IDFT"
         subtitleFFT = "Error Custom IFFT"
         filename = "Error-Comparison-of-Custom-Models-with-NumPy-Inverse.png"
-        title = "Error Comparision of Custom Models with NumPy Inverse Fourier Transform"
+        title = (
+            "Error Comparision of Custom Models with NumPy Inverse Fourier Transform"
+        )
     else:
         subtitleDFT = "Error Custom DFT"
         subtitleFFT = "Error Custom FFT"
         filename = "Error-Comparison-of-Custom-Models-with-NumPy.png"
         title = "Error Comparision of Custom Models with NumPy Fourier Transform"
 
+    # Plot the error between the FFT and Naive Fourier Transform
     image0 = axs[0].imshow(error_fft, cmap="viridis")
     axs[0].set_title(subtitleFFT, fontsize=14, fontweight="bold")
     axs[0].set_xlabel("X-axis")
     axs[0].set_ylabel("Y-axis")
     plt.colorbar(image0, ax=axs[0])
 
+    # Plot the error between the DFT and Naive Fourier Transform
     image1 = axs[1].imshow(error_dft, cmap="viridis")
-
     axs[1].set_title(subtitleDFT, fontsize=14, fontweight="bold")
     axs[1].set_xlabel("X-axis")
     axs[1].set_ylabel("Y-axis")
@@ -58,7 +66,6 @@ def plot_error(
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
     plt.savefig(os.path.join(folder_path, filename))
-    # plt.show()
 
 
 if __name__ == "__main__":
