@@ -8,24 +8,31 @@ def denoise_image(image: np.ndarray) -> np.ndarray:
     # First switch to frequency domain
     fft = transform_2D(image)
 
-    # Get rid of high frequencies' contributions
-    # Here we are considering that the frequencies above 15/16pi are high frequencies
-    pi_percentage = 1 / 6
-    threshold_lo = pi_percentage * np.pi
-    threshold_hi = (2 - pi_percentage) * np.pi
-    non_zeroes = (
-        fft.shape[0] * fft.shape[1]
-    )  # To determine the number of non-zeros being used
-    for row in range(fft.shape[0]):
-        for col in range(fft.shape[1]):
-            if (
-                threshold_lo < row * 2 * np.pi / fft.shape[0] < threshold_hi
-                or threshold_lo < col * 2 * np.pi / fft.shape[1] < threshold_hi
-            ):
-                fft[row, col] = 0
-                non_zeroes -= 1
+    # Shift the low frequencies to the center
+    shifted_fft = np.fft.fftshift(fft)
 
-    return np.real(inverse_transform_2D(fft)), non_zeroes
+    # Calculate the indices of the coefficients to keep
+    # Here we are deciding to keep only the coefficients with absolute frequency at most pi/7
+    pi_percentage = 1/7
+    height, width = shifted_fft.shape
+    height_offset = round(height//2 * pi_percentage)
+    width_offset = round(width//2 * pi_percentage)
+
+    # Determine the rectangle of low frequencies to keep with a 1 mask
+    mask = np.zeros(shifted_fft.shape)
+    mask[height//2-height_offset:height//2+height_offset, width//2-width_offset:width//2+width_offset] = 1
+
+    # Apply the filtering
+    filtered_fft = shifted_fft * mask
+
+    # Shift back to obtain the configuration of frequencies of the original fft
+    filtered_fft = np.fft.ifftshift(filtered_fft)
+    
+
+    # Determine non_zeroes
+    non_zeroes = height_offset * width_offset * 4
+
+    return np.real(inverse_transform_2D(filtered_fft)), non_zeroes
 
 
 def plot_denoise_mode(
