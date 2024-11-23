@@ -7,6 +7,9 @@ from FourierTransform import transform_2D
 
 
 class PlottingMode:
+    """ Class responsible for comparing and plotting runtime results
+     for the 2D DFT and 2D FFT algorithms """
+
     def __init__(self, powers_2: List[int] = list(range(5, 11))):
         self.fft_means: np.ndarray = np.array([])
         self.naive_means: np.ndarray = np.array([])

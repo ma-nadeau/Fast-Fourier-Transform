@@ -10,11 +10,14 @@ from QueryMode import Mode
 
 
 def main() -> None:
+    """ Main logic of the fft program """
     try:
         query = fftQuery.parseArguments(sys.argv[1:])
     except fftQueryParsingError as error:
         print("ERROR\tIncorrect input syntax: " + str(error))
         exit()
+    
+    # Fetch image
     image_name = query.image_name
     original_image = fftQuery.convert_image_to_numpy_array(image_name)
     

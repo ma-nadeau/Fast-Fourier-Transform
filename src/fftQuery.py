@@ -6,7 +6,8 @@ from QueryMode import Mode
 
 
 class fftQuery:
-
+    """ Class responsible for parsing and storing the command line arguments """
+    
     utilisation = """ The input should have the following format:
     python fft.py [-m mode] [-i image]
     

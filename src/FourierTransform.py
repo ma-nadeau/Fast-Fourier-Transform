@@ -26,7 +26,7 @@ idft_precomputed_exp_coeffs4 = compute_exp_coeffs(4, True)
 
 
 def dft_naive_1D(signal: np.ndarray) -> np.ndarray:
-    """Computes the 1D [Inverse] Discrete Fourier Transform  (DFT) of the input signal.
+    """Computes the 1D Discrete Fourier Transform  (DFT) of the input signal.
     This method transforms the spatial domain signal into its frequency domain representation.
     Returns:
         np.ndarray: The transformed 1D signal in the frequency domain.
@@ -44,7 +44,7 @@ def dft_naive_1D(signal: np.ndarray) -> np.ndarray:
 
 
 def idft_naive_1D(signal: np.ndarray) -> np.ndarray:
-    """Computes the 1D [Inverse] Discrete Fourier Transform  (DFT) of the input signal.
+    """Computes the 1D Inverse Discrete Fourier Transform  (DFT) of the input signal.
     This method transforms the spatial domain signal into its frequency domain representation.
     Returns:
         np.ndarray: The transformed 1D signal in the frequency domain.
@@ -62,7 +62,9 @@ def idft_naive_1D(signal: np.ndarray) -> np.ndarray:
 
 
 def fft_1D(signal: np.ndarray) -> np.ndarray:
-    """Compute the 1D Fast Fourier Transform using the Cooley-Tukey algorithm."""
+    """Compute the 1D Fast Fourier Transform using the Cooley-Tukey algorithm.
+     Note that the given signal is required to have a length that is a power of 2,
+     otherwise the behaviour is undetermined."""
 
     # Important metrics
     N = signal.size
@@ -96,7 +98,9 @@ def fft_1D(signal: np.ndarray) -> np.ndarray:
 
 
 def ifft_1D(signal: np.ndarray) -> np.ndarray:
-    """Compute the 1D Fast Fourier Transform using the Cooley-Tukey algorithm."""
+    """Compute the 1D Inverse Fast Fourier Transform using the Cooley-Tukey algorithm.
+     Note that the given signal is required to have a length that is a power of 2,
+     otherwise the behaviour is undetermined."""
 
     # Important metrics
     N = signal.size
@@ -130,6 +134,7 @@ def ifft_1D(signal: np.ndarray) -> np.ndarray:
 
 
 def transform_2D(signal: np.ndarray, fast: bool = True) -> np.ndarray:
+    """Compute the 2D Fourier Transform using the FFT or naive DFT algorithm."""
     transformed_row_signal = np.apply_along_axis(
         fft_1D if fast else dft_naive_1D, axis=1, arr=signal
     )
@@ -140,6 +145,7 @@ def transform_2D(signal: np.ndarray, fast: bool = True) -> np.ndarray:
 
 
 def inverse_transform_2D(signal: np.ndarray, fast: bool = True) -> np.ndarray:
+    """Compute the 2D Inverse Fourier Transform using the FFT or naive DFT algorithm."""
     transformed_row_signal = np.apply_along_axis(
         ifft_1D if fast else idft_naive_1D, axis=1, arr=signal
     )
@@ -150,6 +156,7 @@ def inverse_transform_2D(signal: np.ndarray, fast: bool = True) -> np.ndarray:
 
 
 def rescale_image_power2(image):
+    """Compute the 2D Fourier Transform using the FFT or naive DFT algorithm."""
     old_height, old_width = image.shape
     new_dimensions = (nearest_power2(old_width), nearest_power2(old_height))
     return cv2.resize(image, new_dimensions)

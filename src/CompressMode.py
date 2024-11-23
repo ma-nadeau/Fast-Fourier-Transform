@@ -5,19 +5,22 @@ import os
 
 
 def compress_image(image: np.ndarray, percentile_percentage: int) -> np.ndarray:
+    """Compresses a given image by setting to zero FFT coefficients
+     with magnitude less than the percentile of the percentage specified."""
+    
     # First switch to frequency domain
     fft = transform_2D(image)
     magnitude_fft = np.abs(fft)
 
-    # Find the threshold value for the given percentile
+    # Find the threshold value for the given percentile percentage
     threshold = np.percentile(magnitude_fft, percentile_percentage)
 
     # Set elements below the threshold to 0
-    magnitude_fft = np.where(magnitude_fft < threshold, 0, magnitude_fft)
-    fft = np.where(magnitude_fft == 0, 0, fft)
+    fft = np.where(magnitude_fft < threshold, 0, fft)
 
     # Keep track of the number of values not set to 0
     non_zero_count = np.count_nonzero(fft)
+
     return np.real(inverse_transform_2D(fft)), non_zero_count
 
 

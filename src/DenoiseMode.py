@@ -5,6 +5,9 @@ from FourierTransform import transform_2D, rescale_image_power2, inverse_transfo
 
 
 def denoise_image(image: np.ndarray) -> np.ndarray:
+    """Denoise a given image by setting to zero FFT coefficients
+     associated with frequencies out of the [-pi/7,pi/7] range."""
+    
     # First switch to frequency domain
     fft = transform_2D(image)
 
@@ -38,7 +41,7 @@ def denoise_image(image: np.ndarray) -> np.ndarray:
 def plot_denoise_mode(
     original_image: np.ndarray, image_name: str, save_plot: bool = False
 ) -> None:
-    """Plot the original image and its Denoise image."""
+    """Plot the original image alongside its Denoised version."""
 
     # First scale the image
     scaled_image = rescale_image_power2(original_image)
@@ -53,7 +56,7 @@ def plot_denoise_mode(
     plt.title("Scaled Original Image", fontsize=14, fontweight="bold")
     plt.axis("off")
 
-    # Plot Custom FFT
+    # Plot Denoised image
     plt.subplot(1, 2, 2)
     plt.imshow(denoised_image, cmap="gray")
     plt.title("Denoised Image", fontsize=14, fontweight="bold")

@@ -41,7 +41,8 @@ def plot_fast_mode(
 def plot_testing_fast_mode(
     original_image: np.ndarray, image_name: str, save_plot: bool = False
 ) -> None:
-    """Plot the original image and its Fourier transform."""
+    """Plot the original image and its Fourier transform
+     with both the custom and numpy algorithms."""
 
     # First scale the image
     scaled_image = rescale_image_power2(original_image)

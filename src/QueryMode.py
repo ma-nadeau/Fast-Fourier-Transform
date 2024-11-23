@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class Mode(Enum):
     FAST = 1
     DENOISE = 2
