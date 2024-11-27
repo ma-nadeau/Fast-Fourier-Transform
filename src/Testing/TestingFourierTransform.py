@@ -1,12 +1,17 @@
 import os
 import sys
+
+script_dir = os.path.dirname(__file__)
+src_dir = os.path.join(script_dir, '..')
+sys.path.append(src_dir)
+
 import numpy as np
 import matplotlib.pyplot as plt
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
-
+from scipy.ndimage import gaussian_filter
+from DenoiseMode import denoise_image
+from fftQuery import fftQuery
 from PlottingMode import create_2D_array_of_random_element
-from FourierTransform import transform_2D, inverse_transform_2D
+from FourierTransform import rescale_image_power2, transform_2D, inverse_transform_2D
 
 
 def compute_difference(
@@ -67,29 +72,81 @@ def plot_error(
         os.makedirs(folder_path)
     plt.savefig(os.path.join(folder_path, filename))
 
+def plot_denoising_test(original_image : np.ndarray):
+
+    # First scale the image
+    scaled_image = rescale_image_power2(original_image)
+    
+    # Apply Gaussian filter for denoising
+    sigma = 2.3  # Standard deviation for Gaussian kernel
+    scipy_denoised_image = gaussian_filter(scaled_image, sigma=sigma)
+    denoised_image = denoise_image(scaled_image)[0]
+
+    plt.figure(figsize=(10, 6))
+    plt.suptitle("Image Denoising Testing", fontsize=18, fontweight="bold")
+
+    # Plot original image
+    plt.subplot(1, 3, 1)
+    plt.imshow(scaled_image, cmap="gray")
+    plt.title("Scaled Original Image", fontsize=14, fontweight="bold")
+    plt.axis("off")
+
+    # Plot Scipy Denoised image
+    plt.subplot(1, 3, 2)
+    plt.imshow(scipy_denoised_image, cmap="gray")
+    plt.title("Scipy Denoised Image", fontsize=14, fontweight="bold")
+    plt.axis("off")
+
+    # Plot Denoised image
+    plt.subplot(1, 3, 3)
+    plt.imshow(denoised_image, cmap="gray")
+    plt.title("Custom Denoised Image", fontsize=14, fontweight="bold")
+    plt.axis("off")
+    
+    plt.tight_layout()
+    plt.show()
+
+
+utilisation = """ The input should have the following format:
+    python TestingFourierTransform.py <test_num>
+    
+    <test_num> (mandatory):
+    - 1 Plot tests for 2D Fourier Transforms and inverses.
+    - 2 Plot DenoiseMode testing.
+    """
 
 if __name__ == "__main__":
-    # Create a 2D array of random elements
-    array = create_2D_array_of_random_element(5)
 
-    # Compute the Fast Fourier Transform using NumPy
-    fft_model = np.fft.fft2(array)
+    if len(sys.argv) < 2:
+        print(utilisation)
+        exit()
 
-    # Compute the Naive Fourier Transform
-    fast_model = transform_2D(array, True)  # Fast Fourier Transform
-    naive_model = transform_2D(array, False)  # Naive Fourier Transform
-    # Compute the error between the FFT and Naive Fourier Transform
-    plot_error(fft_model, fast_model, naive_model)
+    test_num = sys.argv[1]
 
-    # Compute the Fast Fourier Transform using NumPy
-    inverse_fft_model = np.fft.ifft2(fft_model)
+    if test_num == '1':
+        # Create a 2D array of random elements
+        array = create_2D_array_of_random_element(5)
 
-    # Compute the Naive Fourier Transform
-    inverse_fast_model = inverse_transform_2D(
-        fast_model, True
-    )  # Fast Fourier Transform
-    inverse_naive_model = inverse_transform_2D(
-        naive_model, False
-    )  # Naive Fourier Transform
+        # Compute the Fast Fourier Transform using NumPy
+        fft_model = np.fft.fft2(array)
 
-    plot_error(inverse_fft_model, inverse_fast_model, inverse_naive_model, True)
+        # Compute the Naive Fourier Transform
+        fast_model = transform_2D(array, True)  # Fast Fourier Transform
+        naive_model = transform_2D(array, False)  # Naive Fourier Transform
+        # Compute the error between the FFT and Naive Fourier Transform
+        plot_error(fft_model, fast_model, naive_model)
+
+        # Compute the Fast Fourier Transform using NumPy
+        inverse_fft_model = np.fft.ifft2(fft_model)
+
+        # Compute the Naive Fourier Transform
+        inverse_fast_model = inverse_transform_2D(
+            fast_model, True
+        )  # Fast Fourier Transform
+        inverse_naive_model = inverse_transform_2D(
+            naive_model, False
+        )  # Naive Fourier Transform
+
+        plot_error(inverse_fft_model, inverse_fast_model, inverse_naive_model, True)
+    elif test_num == '2':
+        plot_denoising_test(fftQuery.convert_image_to_numpy_array(f'{os.path.dirname(__file__)}\\..\\..\\Figures\\moonlanding.png'))

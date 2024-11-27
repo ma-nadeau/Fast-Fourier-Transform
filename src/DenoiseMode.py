@@ -69,10 +69,11 @@ def plot_denoise_mode(
     )
 
     plt.tight_layout()
+    plt.show()
+
     if save_plot:
         folder_path = "../Results"
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
         plt.savefig(os.path.join(folder_path, f"{image_name}_Denoised_Image.png"))
-    plt.show()
